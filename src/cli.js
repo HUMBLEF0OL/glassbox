@@ -5,9 +5,10 @@
  * Trace: OBJ-4, NFR-02, CON-03, CON-04
  */
 import { parseArgs } from 'util';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { join, dirname } from 'path';
+import { DEFAULTS } from './config.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -75,7 +76,6 @@ export async function main(argv) {
   const { streamLines }       = await import('./read.js');
   const { toEvents }          = await import('./normalize.js');
   const { annotate }          = await import('./classify.js');
-  const { writeFileSync }     = await import('fs');
 
   // Resolve transcript path
   let location;
@@ -126,7 +126,47 @@ export async function main(argv) {
     process.exit(0);
   }
 
-  // Slices 2-5 dispatch will be added here.
-  process.stderr.write('Error: no output format specified. Use --json or wait for Slice 2 (HTML report).\n');
-  process.exit(1);
+  // --- Slice 2: full single-session report ---
+  const { build }   = await import('./timeline.js');
+  const { report }  = await import('./render/report.js');
+
+  const timeline = build(events);
+  const outPath  = values.out ?? DEFAULTS.outPath;
+
+  // Slice 3 will inject the real scorecard here; for now pass null.
+  const scorecard = null;
+
+  const meta = {
+    file: location.file,
+    generatedAt: new Date().toISOString(),
+    eventCount: events.length,
+    skipped,
+    sensitivityWarning: !values.redact,
+  };
+
+  const html = report({ timeline, scorecard, meta });
+
+  try {
+    writeFileSync(outPath, html, 'utf8');
+  } catch (err) {
+    process.stderr.write(`Error writing report: ${err.message}\n`);
+    process.exit(1);
+  }
+
+  process.stdout.write(`Report written to ${outPath}\n`);
+
+  // --open: launch the report in the default browser (no network — local file only)
+  if (values.open) {
+    const { spawn } = await import('child_process');
+    const abs = new URL(`file:///${outPath.replace(/\\/g, '/')}`).href;
+    if (process.platform === 'win32') {
+      spawn('cmd', ['/c', 'start', '', abs], { detached: true, stdio: 'ignore' }).unref();
+    } else if (process.platform === 'darwin') {
+      spawn('open', [abs], { detached: true, stdio: 'ignore' }).unref();
+    } else {
+      spawn('xdg-open', [abs], { detached: true, stdio: 'ignore' }).unref();
+    }
+  }
+
+  process.exit(0);
 }
