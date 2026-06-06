@@ -126,18 +126,28 @@ export async function main(argv) {
     process.exit(0);
   }
 
-  // --- Slice 2+3: full single-session report with metrics ---
-  const { build }    = await import('./timeline.js');
-  const { report }   = await import('./render/report.js');
-  const { runAll }   = await import('./metrics/index.js');
+  // --- Slice 2+3+4: full single-session report with metrics and optional redaction ---
+  const { build }      = await import('./timeline.js');
+  const { report }     = await import('./render/report.js');
+  const { runAll }     = await import('./metrics/index.js');
+  const { scrubModel } = await import('./redact.js');
 
-  const timeline = build(events);
+  let timeline = build(events);
   const outPath  = values.out ?? DEFAULTS.outPath;
 
   // --- Slice 3: run all six metrics ---
   const scope     = values.scope ?? [];
   const threshold = values.threshold ? Number(values.threshold) : DEFAULTS.loopThreshold;
-  const scorecard = runAll(events, { scope, threshold });
+  let scorecard = runAll(events, { scope, threshold });
+
+  // --- Slice 4: optional secret redaction ---
+  let redactedCount = 0;
+  if (values.redact) {
+    const { timeline: t, scorecard: s, count } = scrubModel({ timeline, scorecard }, { redact: true });
+    timeline = t;
+    scorecard = s;
+    redactedCount = count;
+  }
 
   const meta = {
     file: location.file,
@@ -145,6 +155,7 @@ export async function main(argv) {
     eventCount: events.length,
     skipped,
     sensitivityWarning: !values.redact,
+    redacted: values.redact ? redactedCount : undefined,
   };
 
   const html = report({ timeline, scorecard, meta });

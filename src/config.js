@@ -84,10 +84,25 @@ export const STATE_FILE_PATTERNS = [
 
 /**
  * Secret patterns for optional redaction (Slice 4).
- * Placeholder — populated in Phase 4.
+ * Each entry: { kind: string, re: RegExp }
  * Trace: NFR-01, RSK-04
  */
-export const SECRET_PATTERNS = [];
+export const SECRET_PATTERNS = [
+  // Anthropic API keys
+  { kind: 'anthropic-key',  re: /sk-ant-[A-Za-z0-9\-_]{16,}/g },
+  // OpenAI-style keys
+  { kind: 'openai-key',     re: /sk-[A-Za-z0-9\-_]{16,}/g },
+  // AWS access keys
+  { kind: 'aws-key',        re: /AKIA[0-9A-Z]{16}/g },
+  // Bearer tokens in headers
+  { kind: 'bearer-token',   re: /Bearer\s+[A-Za-z0-9\-_.~+/]{16,}={0,2}/gi },
+  // Authorization header value
+  { kind: 'auth-header',    re: /Authorization:\s*[^\s'"]{8,}/gi },
+  // PEM private keys
+  { kind: 'pem-key',        re: /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g },
+  // .env KEY=value for sensitive names (limited false-positive risk)
+  { kind: 'env-secret',     re: /(?:^|[\n\r])(?:[A-Z_]*(?:KEY|TOKEN|SECRET|PASSWORD|PASS|AUTH)[A-Z_]*)=[^\n\r'"]{4,}/gm },
+];
 
 /**
  * Global defaults.
