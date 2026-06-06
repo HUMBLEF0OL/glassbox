@@ -3,7 +3,7 @@
  * Raised when: completion is claimed AND no successful verify follows the last edit.
  * Trace: BR-05, AC-04, NFR-06
  */
-import { successOf, hasCompletionClaim } from './helpers.js';
+import { successOf, hasCompletionClaim, findCallForResult } from './helpers.js';
 
 /**
  * @param {import('../normalize.js').Event[]} events
@@ -48,7 +48,7 @@ export function compute(events, _options = {}) {
 
   const hasPassingVerify = postEditVerifies.some(e => {
     // Find the corresponding tool_call to check if it was a verify command
-    const call = events.find(c => c.type === 'tool_call' && c.uuid === e.result?.assistantUuid);
+    const call = findCallForResult(events, e);
     const isVerify = call?.tool?.command === 'verify';
     const ok = successOf(e);
     return isVerify && ok === true;
@@ -68,7 +68,7 @@ export function compute(events, _options = {}) {
 
   // Check if verify success is undeterminable (null ok)
   const anyVerifyAttempted = postEditVerifies.some(e => {
-    const call = events.find(c => c.type === 'tool_call' && c.uuid === e.result?.assistantUuid);
+    const call = findCallForResult(events, e);
     return call?.tool?.command === 'verify';
   });
 

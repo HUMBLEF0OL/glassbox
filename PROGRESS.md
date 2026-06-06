@@ -54,3 +54,4 @@ Confirmed 2026-06-06 from real Claude Code transcripts on this Windows machine.
 | 2026-06-06 | Phase 3 complete: all six metrics (grepSemantic, earlyVictory, verificationDensity, overreach, continuity, loopDetection); 110/110 tests. Tagged v0.4.0. |
 | 2026-06-06 | Phase 4 complete: src/redact.js; --redact flag scrubs secrets; sensitivity warning added; 121/121 tests. Tagged v0.5.0. |
 | 2026-06-06 | Phase 5 complete: src/render/compare.js; glassbox compare a.jsonl b.jsonl produces one HTML page with all six metrics side-by-side and deltas; 125/125 tests. Tagged v1.0.0. |
+| 2026-06-06 | Post-v1.0.0 fix: block-level tool-result correlation (correlateResults in normalize.js, findCallForResult in helpers.js); fixes earlyVictory + verificationDensity when one assistant record emits multiple tool calls. taskSegments condition corrected. package.json version bumped to 1.0.0. 128/128 tests. |

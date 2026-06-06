@@ -51,8 +51,8 @@ export function taskSegments(events) {
 
   for (let i = 0; i < events.length; i++) {
     const ev = events[i];
-    if (ev.type === 'user' && !ev.result) {
-      // Real user message (not tool result)
+    if (ev.type === 'user') {
+      // Real user message (tool results are type 'tool_result', not 'user')
       if (segStart !== null) {
         segments.push({ start: segStart, end: ev.seq, userText });
       }
@@ -68,6 +68,31 @@ export function taskSegments(events) {
   }
 
   return segments;
+}
+
+/**
+ * Find the tool_call event that produced a given tool_result event.
+ *
+ * Prefers the precise block-level link (`tool.id === result.toolUseId`, assigned by
+ * normalize.correlateResults) so that an assistant turn emitting several tool calls is
+ * disambiguated correctly. Falls back to the assistant-record uuid when no toolUseId is
+ * present (e.g. hand-built test events that bypass normalization).
+ *
+ * @param {import('../normalize.js').Event[]} events
+ * @param {import('../normalize.js').Event} resultEvent
+ * @returns {import('../normalize.js').Event|undefined}
+ */
+export function findCallForResult(events, resultEvent) {
+  const toolUseId = resultEvent?.result?.toolUseId;
+  if (toolUseId != null) {
+    const byId = events.find(
+      c => c.type === 'tool_call' && c.tool?.id != null && c.tool.id === toolUseId
+    );
+    if (byId) return byId;
+  }
+  const assistantUuid = resultEvent?.result?.assistantUuid;
+  if (assistantUuid == null) return undefined;
+  return events.find(c => c.type === 'tool_call' && c.uuid === assistantUuid);
 }
 
 /**

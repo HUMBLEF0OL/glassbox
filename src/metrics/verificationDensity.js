@@ -3,7 +3,7 @@
  * edits / successful-verifies ratio. Infinity + alert when no successful verifies.
  * Trace: BR-06, AC-05, NFR-06
  */
-import { successOf } from './helpers.js';
+import { successOf, findCallForResult } from './helpers.js';
 
 /**
  * @param {import('../normalize.js').Event[]} events
@@ -16,7 +16,7 @@ export function compute(events, _options = {}) {
   // Count tool_result events that follow a verify tool_call with ok===true
   const verifiesOk = events.filter(e => {
     if (e.type !== 'tool_result') return false;
-    const call = events.find(c => c.type === 'tool_call' && c.uuid === e.result?.assistantUuid);
+    const call = findCallForResult(events, e);
     return call?.tool?.command === 'verify' && successOf(e) === true;
   }).length;
 

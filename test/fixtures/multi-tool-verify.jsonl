@@ -1,0 +1,5 @@
+{"type":"user","uuid":"u1","timestamp":"2026-06-06T10:00:00.000Z","promptId":"p1","message":{"role":"user","content":[{"type":"text","text":"fix the bug and verify"}]},"sessionId":"sess1"}
+{"type":"assistant","uuid":"a1","timestamp":"2026-06-06T10:00:01.000Z","requestId":"r1","message":{"role":"assistant","content":[{"type":"tool_use","id":"tu_edit","name":"Edit","input":{"file_path":"/src/foo.js","old_string":"a","new_string":"b"}},{"type":"tool_use","id":"tu_verify","name":"Bash","input":{"command":"node --test"}}]},"sessionId":"sess1"}
+{"type":"user","uuid":"u2","timestamp":"2026-06-06T10:00:02.000Z","toolUseResult":{"filePath":"/src/foo.js","userModified":false},"sourceToolAssistantUUID":"a1","sessionId":"sess1"}
+{"type":"user","uuid":"u3","timestamp":"2026-06-06T10:00:03.000Z","toolUseResult":{"stdout":"ok - 1 passed, 0 problems","stderr":"","interrupted":false,"isImage":false},"sourceToolAssistantUUID":"a1","sessionId":"sess1"}
+{"type":"assistant","uuid":"a2","timestamp":"2026-06-06T10:00:04.000Z","requestId":"r2","message":{"role":"assistant","content":[{"type":"text","text":"All tests pass. The fix is complete."}]}}

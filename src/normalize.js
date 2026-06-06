@@ -148,7 +148,7 @@ export function toEvents(records) {
           text: null,
           tool: null,
           result: {
-            toolUseId: null,            // Not directly available in raw record
+            toolUseId: null,            // populated by correlateResults() (block id of the originating call)
             assistantUuid: record.sourceToolAssistantUUID ?? null,
             raw: rawResult,
             ok,
@@ -262,5 +262,44 @@ export function toEvents(records) {
     });
   }
 
+  correlateResults(events);
   return events;
+}
+
+/**
+ * Assign each tool_result its originating tool_call's block id (`result.toolUseId`).
+ *
+ * The raw result record only carries `sourceToolAssistantUUID` (the assistant *record*
+ * uuid), not a per-block tool-use id. When one assistant record emits multiple tool_use
+ * blocks they all share that record uuid, so a uuid-only correlation cannot tell the
+ * blocks apart. Here we pair results to calls by assistant uuid **in arrival order**
+ * (results are returned in block order), giving each result the unique block id of its
+ * call. Downstream code can then correlate precisely on `tool.id === result.toolUseId`.
+ *
+ * @param {Event[]} events
+ */
+function correlateResults(events) {
+  /** @type {Map<string, Event[]>} assistant uuid → tool_call events in seq order */
+  const callsByAssistant = new Map();
+  for (const ev of events) {
+    if (ev.type !== 'tool_call') continue;
+    const list = callsByAssistant.get(ev.uuid) ?? [];
+    list.push(ev);
+    callsByAssistant.set(ev.uuid, list);
+  }
+
+  /** @type {Map<string, number>} assistant uuid → next unconsumed call index */
+  const consumed = new Map();
+  for (const ev of events) {
+    if (ev.type !== 'tool_result' || !ev.result) continue;
+    const aUuid = ev.result.assistantUuid;
+    if (aUuid == null) continue;
+    const calls = callsByAssistant.get(aUuid);
+    if (!calls || calls.length === 0) continue;
+    const idx = consumed.get(aUuid) ?? 0;
+    const call = calls[idx];
+    if (!call) continue;
+    ev.result.toolUseId = call.tool?.id ?? null;
+    consumed.set(aUuid, idx + 1);
+  }
 }

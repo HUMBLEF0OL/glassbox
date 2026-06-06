@@ -12,7 +12,7 @@
       "area": "harness",
       "title": "Project + harness skeleton, runnable empty CLI",
       "user_visible_behavior": "`node bin/glassbox.js --version` prints a version and exits 0.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["OBJ-4", "OBJ-5", "NFR-02", "NFR-03", "CON-03", "CON-04"],
       "verification": [
         "node bin/glassbox.js --version exits 0 and prints a version string",
@@ -20,7 +20,7 @@
         "verify.ps1 / verify.sh passes (tests + no-network grep)",
         "package.json declares no runtime dependencies"
       ],
-      "evidence": "",
+      "evidence": "Slice 0 merged, tagged v0.1.0. cli.smoke.test.js (--version/--help/no-args) green; package.json has no dependencies; verify gate green (128/128 tests, no-network grep 0 hits).",
       "notes": "Slice 0. bin -> src/cli.js stub with --help/--version via util.parseArgs."
     },
     {
@@ -29,7 +29,7 @@
       "area": "parse",
       "title": "Discover, read, normalize and classify a real transcript",
       "user_visible_behavior": "`glassbox <transcript> --json out.json` writes per-type event counts without crashing.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-01", "BR-02", "BR-13", "NFR-05", "AC-01", "AC-12", "RSK-01", "RSK-02"],
       "verification": [
         "Discovery spike records confirmed schema fields in PROGRESS.md",
@@ -37,7 +37,7 @@
         "Malformed/truncated fixture completes and reports an accurate skipped count",
         "CLASSIFICATION table updated to match real tool names observed"
       ],
-      "evidence": "",
+      "evidence": "Slice 1 merged, tagged v0.2.0. Schema confirmed in PROGRESS.md; discover/read/normalize/classify tests green (read.test.js skip-count, normalize.test.js inference + correlation, classify.test.js). real-sanitized.jsonl normalizes to 28 events.",
       "notes": "Slice 1. Begins with the discovery spike (schema-investigator agent). All raw-schema knowledge confined to src/normalize.js."
     },
     {
@@ -46,7 +46,7 @@
       "area": "render",
       "title": "Chronological timeline + self-contained HTML report + CLI",
       "user_visible_behavior": "`glassbox <transcript>` writes one self-contained HTML file showing a readable timeline.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-03", "BR-10", "BR-11", "NFR-04", "NFR-07", "AC-02", "AC-09", "AC-11"],
       "verification": [
         "Single command writes a self-contained HTML report (exit 0)",
@@ -54,7 +54,7 @@
         "HTML has no external resource references (no http/https/cdn/link/fetch)",
         "Report generates within the NFR-04 budget on a typical transcript"
       ],
-      "evidence": "",
+      "evidence": "Slice 2 merged, tagged v0.3.0. timeline.test.js (ordering/counts/truncation), render.test.js (inline-only, no external URLs), integration.report.test.js (full pipeline writes HTML, exit 0) all green.",
       "notes": "Slice 2. Scorecard area is a placeholder until Slice 3."
     },
     {
@@ -63,13 +63,13 @@
       "area": "metrics",
       "title": "Metric: Grep vs Semantic (BR-04)",
       "user_visible_behavior": "Scorecard shows search vs semantic counts and ratio; degrades to text-search-only when no semantic tools exist.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-04", "AC-03", "NFR-06", "ASM-04", "RSK-03"],
       "verification": [
         "Unit test covers the normal path (search + semantic present)",
         "Unit test covers the degraded path (no semantic -> status unknown + note)"
       ],
-      "evidence": "",
+      "evidence": "Slice 3 merged, tagged v0.4.0. metrics.grepSemantic.test.js covers normal + degraded (text-search-only) paths; green.",
       "notes": "Slice 3. One file src/metrics/grepSemantic.js + registry entry. LSP-tool identity resolved in Slice 1 (Open Question 2)."
     },
     {
@@ -78,13 +78,13 @@
       "area": "metrics",
       "title": "Metric: Early Victory (BR-05)",
       "user_visible_behavior": "Scorecard flags completion claimed without a passing verification afterward.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-05", "AC-04", "NFR-06"],
       "verification": [
         "Unit test: claim without post-edit passing verify -> raised",
         "Unit test: no edits / no claim / undeterminable verify -> not raised or status unknown"
       ],
-      "evidence": "",
+      "evidence": "Slice 3 merged, tagged v0.4.0. metrics.earlyVictory.test.js covers raised/not-raised/unknown; correlation fixed (normalize.correlation.test.js) so the post-edit verify is matched by block id.",
       "notes": "Slice 3."
     },
     {
@@ -93,13 +93,13 @@
       "area": "metrics",
       "title": "Metric: Verification Density (BR-06)",
       "user_visible_behavior": "Scorecard shows edits per successful verify; infinity/alert when there are zero successful verifies.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-06", "AC-05", "NFR-06"],
       "verification": [
         "Unit test: normal ratio computed from edits and successful verifies",
         "Unit test: zero successful verifies -> ratio infinity, status alert"
       ],
-      "evidence": "",
+      "evidence": "Slice 3 merged, tagged v0.4.0. metrics.verificationDensity.test.js covers normal ratio and infinity/alert; block-id correlation regression-tested in normalize.correlation.test.js.",
       "notes": "Slice 3."
     },
     {
@@ -108,13 +108,13 @@
       "area": "metrics",
       "title": "Metric: Overreach (BR-07)",
       "user_visible_behavior": "Scorecard shows distinct files changed per task and flags out-of-scope edits when --scope is given.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-07", "AC-06", "NFR-06"],
       "verification": [
         "Unit test: distinct changed-file count per task segment",
         "Unit test: with --scope globs, out-of-scope targets are flagged; without scope, count only"
       ],
-      "evidence": "",
+      "evidence": "Slice 3 merged, tagged v0.4.0. metrics.overreach.test.js covers per-task distinct counts and scoped/unscoped flagging; green.",
       "notes": "Slice 3."
     },
     {
@@ -123,13 +123,13 @@
       "area": "metrics",
       "title": "Metric: Continuity (BR-08)",
       "user_visible_behavior": "Scorecard reports whether the state/progress file was read before the first edit.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-08", "AC-07", "NFR-06"],
       "verification": [
         "Unit test: state file read before first edit -> true",
         "Unit test: no edits -> n/a; no read data -> unknown"
       ],
-      "evidence": "",
+      "evidence": "Slice 3 merged, tagged v0.4.0. metrics.continuity.test.js covers state-read-before-edit true, n/a (no edits), and unknown (no read data); green.",
       "notes": "Slice 3."
     },
     {
@@ -138,13 +138,13 @@
       "area": "metrics",
       "title": "Metric: Loop Detection (BR-09)",
       "user_visible_behavior": "Scorecard reports repeated identical tool calls / repeated edits above a threshold.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-09", "AC-08", "NFR-06"],
       "verification": [
         "Unit test: a tool call repeated >= threshold is flagged (uses stableStringify)",
         "Unit test: a file edited >= threshold times is flagged"
       ],
-      "evidence": "",
+      "evidence": "Slice 3 merged, tagged v0.4.0. metrics.loopDetection.test.js covers repeated-call and repeated-edit detection at threshold; green.",
       "notes": "Slice 3. Default threshold 3 (--threshold)."
     },
     {
@@ -153,13 +153,13 @@
       "area": "privacy",
       "title": "Optional secret redaction",
       "user_visible_behavior": "`--redact` scrubs seeded secrets from the HTML and shows a count; without it a sensitivity warning is shown.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["NFR-01", "RSK-04", "AC-11"],
       "verification": [
         "With --redact, seeded secrets do not appear in the HTML; count shown",
         "Without --redact, the report renders and shows the sensitivity warning"
       ],
-      "evidence": "",
+      "evidence": "Slice 4 merged, tagged v0.5.0. redact.test.js asserts each seeded secret kind is scrubbed with an accurate count and non-secret text is preserved; sensitivity warning shown when --redact absent; green.",
       "notes": "Slice 4."
     },
     {
@@ -168,14 +168,14 @@
       "area": "render",
       "title": "Two-session comparison report",
       "user_visible_behavior": "`glassbox compare a.jsonl b.jsonl` produces one HTML page comparing both sessions on all six metrics.",
-      "status": "not_started",
+      "status": "passing",
       "trace": ["BR-12", "OBJ-3", "AC-10"],
       "verification": [
         "compare produces one HTML page with all six metrics side by side",
         "Numeric deltas are correct and direction-labelled (improvement vs regression)",
         "No external resource references (AC-11)"
       ],
-      "evidence": "",
+      "evidence": "Slice 5 merged, tagged v1.0.0. integration.compare.test.js asserts one HTML page comparing all six metrics with correct direction-labelled deltas and no external resources; green.",
       "notes": "Slice 5. --redact/--scope/--threshold apply to both sessions."
     }
   ]
