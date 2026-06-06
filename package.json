@@ -1,0 +1,17 @@
+{
+  "name": "glassbox",
+  "version": "0.1.0",
+  "description": "Local, read-only Claude Code session observer — parses JSONL transcripts and renders a self-contained HTML report.",
+  "type": "module",
+  "bin": {
+    "glassbox": "bin/glassbox.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "verify": "node --test"
+  },
+  "engines": {
+    "node": ">=18.3"
+  },
+  "license": "MIT"
+}
