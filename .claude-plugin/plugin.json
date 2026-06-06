@@ -1,0 +1,20 @@
+{
+  "name": "glassbox-harness",
+  "version": "0.1.0",
+  "description": "Harness tooling for building Glassbox under its own observation: guardrail hooks (no-network, no-raw-transcript, verify-on-stop, tool-use log, session-start), the schema-investigator / slice-implementer / metric-author agents, repo skills, and dev-time-only MCP servers. Enforces the no-network, zero-dependency, single-boundary rules (OBJ-5).",
+  "author": { "name": "Glassbox" },
+  "homepage": "https://walkinglabs.github.io/learn-harness-engineering/en/",
+  "keywords": ["harness", "claude-code", "glassbox", "observability"],
+  "agents": [
+    "./.claude/agents/schema-investigator.md",
+    "./.claude/agents/slice-implementer.md",
+    "./.claude/agents/metric-author.md"
+  ],
+  "skills": [
+    "./.claude/skills/glassbox-conventions/SKILL.md",
+    "./.claude/skills/harness-workflow/SKILL.md",
+    "./.claude/skills/transcript-schema/SKILL.md"
+  ],
+  "hooks": "./.claude/hooks/hooks.json",
+  "mcpServers": "./.mcp.json"
+}

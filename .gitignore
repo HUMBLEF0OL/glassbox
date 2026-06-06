@@ -128,6 +128,20 @@ dist
 # pnpm
 .pnpm-store
 
+# --- Glassbox-specific ---
+# Generated reports & exports (never commit)
+glassbox-report.html
+*.report.html
+*.events.json
+
+# Harness tool-use observability log (regenerated each session)
+.claude/logs/
+
+# Real / captured Claude Code transcripts — privacy: never commit raw sessions.
+# Only sanitized fixtures under test/fixtures/ are allowed.
+*.jsonl
+!test/fixtures/**/*.jsonl
+
 # yarn v3
 .pnp.*
 .yarn/*

@@ -1,0 +1,11 @@
+{
+  "name": "glassbox-harness",
+  "owner": { "name": "Glassbox" },
+  "plugins": [
+    {
+      "name": "glassbox-harness",
+      "source": "./",
+      "description": "Local harness for the Glassbox project: guardrail hooks, agents, and dev-time MCP servers."
+    }
+  ]
+}
