@@ -4,24 +4,36 @@ A local, read-only **Claude Code session observer**. Glassbox reads a Claude Cod
 and renders a single self-contained HTML report with six behavioural metrics. It makes **no network
 calls** and never controls the agent.
 
-> Status: pre–Slice 0. The harness is in place; the product CLI and pipeline are built slice by
-> slice (see [PROGRESS.md](PROGRESS.md) and [feature_list.json](feature_list.json)).
+> Status: **v1.0.0 — feature complete.** All six slices implemented and verified.
 
 ## What it measures
 
 Grep-vs-semantic ratio, early-victory flag, verification density, overreach, continuity, and loop
 detection — see [docs/Glassbox_BRD.md](docs/Glassbox_BRD.md) (BR-04…BR-09).
 
-## Usage (target)
+## Usage
 
 ```sh
-node bin/glassbox.js <transcript.jsonl>            # writes a self-contained HTML report
-node bin/glassbox.js <transcript.jsonl> --json out.json
-node bin/glassbox.js compare a.jsonl b.jsonl       # two-session comparison
-```
+# Single session report
+node bin/glassbox.js <transcript.jsonl>
 
-Options: `--redact` (scrub seeded secrets), `--scope <glob>` (overreach scope), `--threshold <n>`
-(loop-detection threshold).
+# Auto-discover latest transcript
+node bin/glassbox.js --latest
+
+# Export normalized events as JSON
+node bin/glassbox.js <transcript.jsonl> --json out.json
+
+# Two-session comparison
+node bin/glassbox.js compare a.jsonl b.jsonl
+
+# With options
+node bin/glassbox.js <transcript.jsonl> \
+  --out report.html          # output path (default: ./glassbox-report.html)
+  --redact                   # scrub secrets from the report
+  --scope "src/**"           # overreach scope glob (repeatable)
+  --threshold 3              # loop-detection repeat threshold
+  --open                     # open report in browser after writing
+```
 
 ## Develop
 

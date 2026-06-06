@@ -71,6 +71,46 @@ export async function main(argv) {
     process.exit(0);
   }
 
+  // --- Slice 5: compare command ---
+  if (positionals[0] === 'compare') {
+    const pathA = positionals[1];
+    const pathB = positionals[2];
+    if (!pathA || !pathB) {
+      process.stderr.write('Error: compare requires two transcript paths.\nUsage: glassbox compare <a.jsonl> <b.jsonl>\n');
+      process.exit(1);
+    }
+
+    const { resolveTranscript: resolve } = await import('./discover.js');
+    const { streamLines: sl }  = await import('./read.js');
+    const { toEvents: te }     = await import('./normalize.js');
+    const { annotate: ann }    = await import('./classify.js');
+    const { build: bld }       = await import('./timeline.js');
+    const { runAll: ra }       = await import('./metrics/index.js');
+    const { scrubModel: sm }   = await import('./redact.js');
+    const { compare: cmpRender } = await import('./render/compare.js');
+
+    async function runSession(path) {
+      const loc  = resolve({ path });
+      const res  = await sl(loc.file);
+      const evts = ann(te(res.records));
+      const tl   = bld(evts);
+      const sc   = ra(evts, { scope: values.scope ?? [], threshold: values.threshold ? Number(values.threshold) : DEFAULTS.loopThreshold });
+      let timeline = tl, scorecard = sc, redactedCount = 0;
+      if (values.redact) {
+        const { timeline: t, scorecard: s, count } = sm({ timeline, scorecard }, { redact: true });
+        timeline = t; scorecard = s; redactedCount = count;
+      }
+      return { timeline, scorecard, meta: { file: loc.file, eventCount: evts.length, skipped: res.skipped, redacted: values.redact ? redactedCount : undefined } };
+    }
+
+    const [sessA, sessB] = await Promise.all([runSession(pathA), runSession(pathB)]);
+    const outPath = values.out ?? DEFAULTS.outPath;
+    const html = cmpRender({ a: sessA, b: sessB, meta: { generatedAt: new Date().toISOString() } });
+    writeFileSync(outPath, html, 'utf8');
+    process.stdout.write(`Comparison report written to ${outPath}\n`);
+    process.exit(0);
+  }
+
   // --- Slice 1: single-session pipeline (discover → read → normalize → classify → --json) ---
   const { resolveTranscript } = await import('./discover.js');
   const { streamLines }       = await import('./read.js');

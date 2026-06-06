@@ -8,11 +8,11 @@
 | Slice | Title | Branch | Status | Tag |
 |---|---|---|---|---|
 | 0 | Harness & Project Skeleton | `slice/0-harness` | ✅ done | `v0.1.0` |
-| 1 | Discovery, Read & Normalize | `slice/1-normalize` | 🟨 in progress | `v0.2.0` |
-| 2 | Timeline + Report Skeleton + CLI | `slice/2-timeline` | ⬜ not started | `v0.3.0` |
-| 3 | Metrics Engine + Six Metrics | `slice/3-metrics` | ⬜ not started | `v0.4.0` |
-| 4 | Secret Redaction | `slice/4-redaction` | ⬜ not started | `v0.5.0` |
-| 5 | Two-Session Comparison | `slice/5-compare` | ⬜ not started | `v1.0.0` |
+| 1 | Discovery, Read & Normalize | `slice/1-normalize` | ✅ done | `v0.2.0` |
+| 2 | Timeline + Report Skeleton + CLI | `slice/2-timeline` | ✅ done | `v0.3.0` |
+| 3 | Metrics Engine + Six Metrics | `slice/3-metrics` | ✅ done | `v0.4.0` |
+| 4 | Secret Redaction | `slice/4-redaction` | ✅ done | `v0.5.0` |
+| 5 | Two-Session Comparison | `slice/5-compare` | ✅ done | `v1.0.0` |
 
 Legend: ⬜ not started · 🟨 in progress · ✅ done (verify gate green, merged, tagged)
 
@@ -50,3 +50,7 @@ Confirmed 2026-06-06 from real Claude Code transcripts on this Windows machine.
 | 2026-06-06 | Harness audit fixes: agent `tools:` frontmatter → Claude Code names; unified no-network pattern (covers side-effect + dynamic imports) shared via `hooks/lib.mjs` and mirrored in `verify.ps1`/`verify.sh` (now scan `.mjs`/`.cjs`); no-network & no-raw-transcript guards made `Bash`-aware (matchers updated in both hook configs); skills packaged in `plugin.json`; two-hook-config sync note added to CLAUDE.md; README expanded. Guard matrix verified (8/8 cases). |
 | 2026-06-06 | Phase 0 complete: package.json, bin/glassbox.js, src/cli.js, test/cli.smoke.test.js. Verify gate green (3/3 tests). Tagged v0.1.0. |
 | 2026-06-06 | Phase 1 complete: discovery spike confirmed schema; src/config.js, discover.js, read.js, normalize.js, classify.js; cli.js wired with --json; 45/45 tests green; real-sanitized fixture produces 28 events (user:3, assistant:11, tool_call:7, tool_result:7). Tagged v0.2.0. |
+| 2026-06-06 | Phase 2 complete: src/timeline.js, src/render/template.js, src/render/report.js; glassbox <transcript> writes self-contained HTML; 69/69 tests. Tagged v0.3.0. |
+| 2026-06-06 | Phase 3 complete: all six metrics (grepSemantic, earlyVictory, verificationDensity, overreach, continuity, loopDetection); 110/110 tests. Tagged v0.4.0. |
+| 2026-06-06 | Phase 4 complete: src/redact.js; --redact flag scrubs secrets; sensitivity warning added; 121/121 tests. Tagged v0.5.0. |
+| 2026-06-06 | Phase 5 complete: src/render/compare.js; glassbox compare a.jsonl b.jsonl produces one HTML page with all six metrics side-by-side and deltas; 125/125 tests. Tagged v1.0.0. |
