@@ -70,7 +70,63 @@ export async function main(argv) {
     process.exit(0);
   }
 
-  // Remaining dispatch (Slices 1-5) is added here incrementally.
-  process.stderr.write('Error: no command recognized. Run --help for usage.\n');
+  // --- Slice 1: single-session pipeline (discover → read → normalize → classify → --json) ---
+  const { resolveTranscript } = await import('./discover.js');
+  const { streamLines }       = await import('./read.js');
+  const { toEvents }          = await import('./normalize.js');
+  const { annotate }          = await import('./classify.js');
+  const { writeFileSync }     = await import('fs');
+
+  // Resolve transcript path
+  let location;
+  try {
+    location = resolveTranscript({ path: positionals[0], latest: values.latest });
+  } catch (err) {
+    process.stderr.write(`Error: ${err.message}\n`);
+    process.exit(1);
+  }
+
+  // Read → normalize → classify
+  let readResult;
+  try {
+    readResult = await streamLines(location.file);
+  } catch (err) {
+    process.stderr.write(`Error reading transcript: ${err.message}\n`);
+    process.exit(1);
+  }
+
+  const { records, skipped } = readResult;
+  const events = annotate(toEvents(records));
+
+  if (events.length === 0 && skipped === records.length + skipped) {
+    process.stderr.write('Error: no events found in transcript.\n');
+    process.exit(1);
+  }
+
+  // --json output (AC-01)
+  if (values.json) {
+    const counts = {};
+    for (const ev of events) counts[ev.type] = (counts[ev.type] ?? 0) + 1;
+    const output = {
+      file: location.file,
+      source: location.source,
+      total: readResult.total,
+      skipped,
+      eventCount: events.length,
+      counts,
+      events,
+    };
+    try {
+      writeFileSync(values.json, JSON.stringify(output, null, 2));
+      process.stdout.write(`Wrote ${events.length} events to ${values.json}\n`);
+    } catch (err) {
+      process.stderr.write(`Error writing JSON: ${err.message}\n`);
+      process.exit(1);
+    }
+    process.exit(0);
+  }
+
+  // Slices 2-5 dispatch will be added here.
+  process.stderr.write('Error: no output format specified. Use --json or wait for Slice 2 (HTML report).\n');
   process.exit(1);
 }

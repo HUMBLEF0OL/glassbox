@@ -1,0 +1,8 @@
+{"type":"user","uuid":"u1","timestamp":"2026-06-06T10:00:00.000Z","message":{"role":"user","content":[{"type":"text","text":"hello"}]},"sessionId":"sess1"}
+{"type":"assistant","uuid":"a1","timestamp":"2026-06-06T10:00:01.000Z","message":{"role":"assistant","content":[{"type":"text","text":"hi there"}]},"sessionId":"sess1"}
+{invalid json here
+{"type":"user","uuid":"u2","timestamp":"2026-06-06T10:00:02.000Z","message":{"role":"user","content":[{"type":"text","text":"continue"}]},"sessionId":"sess1"}
+
+{"type":"assistant","uuid":"a2","timestamp":"2026-06-06T10:00:03.000Z","message":{"role":"assistant","content":[{"type":"tool_use","id":"tu1","name":"Read","input":{"file_path":"/src/foo.js"}}]},"sessionId":"sess1"}
+truncated: {broken
+{"type":"user","uuid":"u3","timestamp":"2026-06-06T10:00:04.000Z","toolUseResult":{"type":"text","file":{"filePath":"/src/foo.js","content":"foo"}},"sourceToolAssistantUUID":"a2","sessionId":"sess1"}
