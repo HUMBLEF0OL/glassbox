@@ -1,0 +1,6 @@
+{"type":"user","uuid":"u1","timestamp":"2026-06-06T10:00:00.000Z","message":{"role":"user","content":[{"type":"text","text":"find all uses of the config function"}]},"sessionId":"sess1"}
+{"type":"assistant","uuid":"a1","timestamp":"2026-06-06T10:00:01.000Z","message":{"role":"assistant","content":[{"type":"tool_use","id":"tu1","name":"Grep","input":{"pattern":"config","path":"/src"}}]},"sessionId":"sess1"}
+{"type":"user","uuid":"u2","timestamp":"2026-06-06T10:00:02.000Z","toolUseResult":{"mode":"content","numFiles":3,"filenames":["/src/a.js","/src/b.js","/src/c.js"]},"sourceToolAssistantUUID":"a1","sessionId":"sess1"}
+{"type":"assistant","uuid":"a2","timestamp":"2026-06-06T10:00:03.000Z","message":{"role":"assistant","content":[{"type":"tool_use","id":"tu2","name":"Glob","input":{"pattern":"**/*.js"}}]},"sessionId":"sess1"}
+{"type":"user","uuid":"u3","timestamp":"2026-06-06T10:00:04.000Z","toolUseResult":{"filenames":["/src/a.js"],"numFiles":1,"durationMs":10},"sourceToolAssistantUUID":"a2","sessionId":"sess1"}
+{"type":"assistant","uuid":"a3","timestamp":"2026-06-06T10:00:05.000Z","message":{"role":"assistant","content":[{"type":"text","text":"Found 3 files using grep. No semantic navigation available."}]},"sessionId":"sess1"}

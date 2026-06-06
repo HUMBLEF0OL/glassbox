@@ -126,15 +126,18 @@ export async function main(argv) {
     process.exit(0);
   }
 
-  // --- Slice 2: full single-session report ---
-  const { build }   = await import('./timeline.js');
-  const { report }  = await import('./render/report.js');
+  // --- Slice 2+3: full single-session report with metrics ---
+  const { build }    = await import('./timeline.js');
+  const { report }   = await import('./render/report.js');
+  const { runAll }   = await import('./metrics/index.js');
 
   const timeline = build(events);
   const outPath  = values.out ?? DEFAULTS.outPath;
 
-  // Slice 3 will inject the real scorecard here; for now pass null.
-  const scorecard = null;
+  // --- Slice 3: run all six metrics ---
+  const scope     = values.scope ?? [];
+  const threshold = values.threshold ? Number(values.threshold) : DEFAULTS.loopThreshold;
+  const scorecard = runAll(events, { scope, threshold });
 
   const meta = {
     file: location.file,
