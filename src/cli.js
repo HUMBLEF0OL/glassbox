@@ -212,7 +212,8 @@ export async function main(argv) {
   // --open: launch the report in the default browser (no network — local file only)
   if (values.open) {
     const { spawn } = await import('child_process');
-    const abs = new URL(`file:///${outPath.replace(/\\/g, '/')}`).href;
+    const { resolve } = await import('path');
+    const abs = new URL(`file:///${resolve(outPath).replace(/\\/g, '/')}`).href;
     if (process.platform === 'win32') {
       spawn('cmd', ['/c', 'start', '', abs], { detached: true, stdio: 'ignore' }).unref();
     } else if (process.platform === 'darwin') {
