@@ -29,6 +29,39 @@ npx github:HUMBLEF0OL/glassbox --latest
 
 Once installed globally, replace `node bin/glassbox.js` with `glassbox` in any command below.
 
+## Finding a transcript to analyze
+
+Glassbox needs a Claude Code session transcript (`.jsonl`). Claude Code writes one append-only
+file per session under:
+
+```
+~/.claude/projects/<project-slug>/<session-id>.jsonl
+```
+
+(On Windows, Glassbox also checks `%APPDATA%\Claude\projects\...`; on POSIX it also checks
+`~/.config/claude/projects/...` and `$XDG_CONFIG_HOME/claude/projects/...`.)
+
+- **`<project-slug>`** is derived from the project's working-directory path, with separators,
+  colons, and spaces replaced by dashes — e.g. `e:\Projects and Learning\glassbox` becomes
+  `e--Projects-and-Learning-glassbox`.
+- **`<session-id>`** is a UUID; one file per session, growing as the session continues. The most
+  recently modified file in a project's folder is its latest session.
+
+You don't have to hunt these down by hand — `--latest` searches every known root on the machine
+and picks the newest `.jsonl` overall:
+
+```sh
+glassbox --latest
+```
+
+To analyze a specific past session instead, open `~/.claude/projects/<your-project-slug>/`, find
+the file by its modified date (or session UUID, if you know it from `claude --resume` / your IDE),
+and pass its path directly:
+
+```sh
+glassbox ~/.claude/projects/e--Projects-and-Learning-glassbox/<session-id>.jsonl
+```
+
 ## Usage
 
 ```sh
