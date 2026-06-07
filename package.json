@@ -13,5 +13,13 @@
   "engines": {
     "node": ">=18.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HUMBLEF0OL/glassbox.git"
+  },
+  "homepage": "https://github.com/HUMBLEF0OL/glassbox#readme",
+  "bugs": {
+    "url": "https://github.com/HUMBLEF0OL/glassbox/issues"
+  }
 }

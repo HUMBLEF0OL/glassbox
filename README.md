@@ -11,6 +11,24 @@ calls** and never controls the agent.
 Grep-vs-semantic ratio, early-victory flag, verification density, overreach, continuity, and loop
 detection — see [docs/Glassbox_BRD.md](docs/Glassbox_BRD.md) (BR-04…BR-09).
 
+## Install
+
+Glassbox is zero-dependency, plain ESM, and has no build step — npm can install it straight
+from this GitHub repo, no published registry package needed:
+
+```sh
+# Latest master, as a global `glassbox` command
+npm install -g github:HUMBLEF0OL/glassbox
+
+# Pinned to a release tag (recommended for stability)
+npm install -g github:HUMBLEF0OL/glassbox#v1.0.0
+
+# Or run it once without installing
+npx github:HUMBLEF0OL/glassbox --latest
+```
+
+Once installed globally, replace `node bin/glassbox.js` with `glassbox` in any command below.
+
 ## Usage
 
 ```sh
