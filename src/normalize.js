@@ -68,6 +68,15 @@ function extractTs(record) {
   return { ts: String(ts), warning: null };
 }
 
+// Failure keywords that indicate a genuine error in tool stdout/stderr.
+// Includes "failing" so mocha-style "N failing" summaries are detected.
+const FAILURE_RE = /\b(error|exception|fail(?:ed|ing|ure)?|fatal|abort|cannot|could not)\b/;
+
+// Zero-count mentions that must NOT trigger FAILURE_RE — e.g. node:test's
+// "# fail 0", mocha's "0 failing", or "1 error, 0 warnings" build summaries.
+// Stripped from the text before the failure-keyword check runs.
+const ZERO_COUNT_RE = /(?:#\s*(?:fail(?:ed|ure)?s?|errors?|warnings?)\s+0\b)|(?:\b0\s+(?:failing|failed|fail(?:ure)?s?|errors?|exceptions?|warnings?)\b)|(?:\b(?:failing|failed|fail(?:ure)?s?|errors?|exceptions?|warnings?)\s*[:=]\s*0\b)/g;
+
 /**
  * Derive the success signal from a tool result record (Open Question 4).
  * Returns true/false/null (null = undeterminable).
@@ -88,10 +97,13 @@ function deriveOk(toolUseResult) {
   // Shell tools: interrupted = failure
   if (interrupted === true) return false;
 
-  // Shell tools: check stdout/stderr for failure keywords
+  // Shell tools: check stdout/stderr for failure keywords, ignoring zero-count
+  // summary mentions ("# fail 0", "0 failing", "1 error, 0 warnings") that are
+  // part of a passing test-runner report rather than a genuine failure.
   if (typeof stdout === 'string' || typeof stderr === 'string') {
     const combined = `${stdout}\n${stderr}`.toLowerCase();
-    if (/\b(error|exception|fail(ed|ure)?|fatal|abort|cannot|could not)\b/.test(combined)) {
+    const stripped = combined.replace(ZERO_COUNT_RE, ' ');
+    if (FAILURE_RE.test(stripped)) {
       return false;
     }
     return true;

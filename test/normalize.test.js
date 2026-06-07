@@ -161,3 +161,57 @@ test('tool result with no error signals → ok=true', () => {
   const [ev] = toEvents([record]);
   assert.equal(ev.result.ok, true);
 });
+
+test('tool result with passing node --test summary ("# fail 0") → ok=true', () => {
+  const record = makeToolResult({
+    stdout: '# tests 128\n# pass 128\n# fail 0\n# cancelled 0\n# skipped 0',
+    stderr: '', interrupted: false, isImage: false,
+  });
+  const [ev] = toEvents([record]);
+  assert.equal(ev.result.ok, true);
+});
+
+test('tool result with passing mocha-style summary ("0 failing") → ok=true', () => {
+  const record = makeToolResult({
+    stdout: '125 passing (2s)\n0 failing',
+    stderr: '', interrupted: false, isImage: false,
+  });
+  const [ev] = toEvents([record]);
+  assert.equal(ev.result.ok, true);
+});
+
+test('tool result with "0 errors, 0 warnings" summary → ok=true', () => {
+  const record = makeToolResult({
+    stdout: 'Build succeeded: 0 errors, 0 warnings',
+    stderr: '', interrupted: false, isImage: false,
+  });
+  const [ev] = toEvents([record]);
+  assert.equal(ev.result.ok, true);
+});
+
+test('tool result with genuine failing summary ("2 failing") → ok=false', () => {
+  const record = makeToolResult({
+    stdout: '123 passing (2s)\n2 failing',
+    stderr: '', interrupted: false, isImage: false,
+  });
+  const [ev] = toEvents([record]);
+  assert.equal(ev.result.ok, false);
+});
+
+test('tool result with genuine error message ("cannot find module") → ok=false', () => {
+  const record = makeToolResult({
+    stdout: '', stderr: 'Error: cannot find module "foo"',
+    interrupted: false, isImage: false,
+  });
+  const [ev] = toEvents([record]);
+  assert.equal(ev.result.ok, false);
+});
+
+test('tool result with "1 error, 0 warnings" → ok=false', () => {
+  const record = makeToolResult({
+    stdout: 'Build failed: 1 error, 0 warnings',
+    stderr: '', interrupted: false, isImage: false,
+  });
+  const [ev] = toEvents([record]);
+  assert.equal(ev.result.ok, false);
+});

@@ -6,26 +6,42 @@
 import { taskSegments } from './helpers.js';
 
 /**
- * Simple glob matcher without external dependencies.
+ * Convert a single glob segment (no rooting concerns) to a regex source string.
  * Supports * (any except /) and ** (any including /).
  * @param {string} pattern
- * @param {string} filePath
- * @returns {boolean}
+ * @returns {string}
  */
-function globMatch(pattern, filePath) {
-  // Convert glob pattern to regex
-  const re = pattern
-    .replace(/\\/g, '/')
+function globToRegexSource(pattern) {
+  return pattern
     .replace(/[.+^${}()|[\]\\]/g, '\\$&')  // escape regex specials (except * and ?)
     .replace(/\\\*/g, '*')                   // un-escape * for processing
     .replace(/\*\*/g, '\x00')               // temporarily replace **
     .replace(/\*/g, '[^/]*')               // * → match anything except /
     .replace(/\x00/g, '.*');               // ** → match anything
-  try {
-    return new RegExp(`^${re}$`).test(filePath.replace(/\\/g, '/'));
-  } catch {
-    return false;
-  }
+}
+
+/**
+ * .gitignore-style glob matcher without external dependencies.
+ * extractTargets() records absolute paths, but users naturally write relative
+ * scope globs ("src/**", "*.md"). Mirroring .gitignore semantics: a pattern
+ * that is *rooted* (starts with "/", a drive letter "C:", or "**") must match
+ * the full path; any other pattern is relative and matches at any depth.
+ * @param {string} pattern
+ * @param {string} filePath
+ * @returns {boolean}
+ */
+function globMatch(pattern, filePath) {
+  const path = filePath.replace(/\\/g, '/');
+  const normalized = pattern.replace(/\\/g, '/');
+  const isRooted = /^(?:\/|[A-Za-z]:|\*\*)/.test(normalized);
+  const candidates = isRooted ? [normalized] : [normalized, `**/${normalized}`];
+  return candidates.some(p => {
+    try {
+      return new RegExp(`^${globToRegexSource(p)}$`).test(path);
+    } catch {
+      return false;
+    }
+  });
 }
 
 /**

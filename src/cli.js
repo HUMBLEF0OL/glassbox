@@ -33,6 +33,9 @@ Options:
   --redact           Scrub secrets from the rendered report (Slice 4).
   --open             Open the report in the default browser after writing.
   --scope <glob>     Intended file scope for overreach detection (repeatable).
+                     .gitignore-style matching: a relative glob ("src/**",
+                     "*.md") matches at any path depth; a rooted glob
+                     ("/src/**", "C:/proj/src/**") matches the full path.
   --threshold <n>    Loop-detection repeat threshold (default: 3).
 `;
 

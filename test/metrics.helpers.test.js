@@ -4,7 +4,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { stableStringify, successOf, taskSegments } from '../src/metrics/helpers.js';
+import { stableStringify, successOf, taskSegments, hasCompletionClaim } from '../src/metrics/helpers.js';
 
 // --- stableStringify ---
 
@@ -96,3 +96,37 @@ test('taskSegments single segment when one user message', () => {
   assert.equal(segs.length, 1);
   assert.equal(segs[0].userText, 'go');
 });
+
+// --- hasCompletionClaim / COMPLETION_PATTERNS ---
+
+const GENUINE_COMPLETION_CLAIMS = [
+  'The implementation is complete.',
+  'The implementation is complete and done.',
+  'All tests pass. Implementation complete.',
+  "I've implemented the fix and all tests pass.",
+  'The fix is now complete and ready for review.',
+  "I'm done with this task. Everything is committed.",
+  'This is done — verified all tests pass locally.',
+  "We're finished — this is ready to ship.",
+];
+
+const MID_TASK_NARRATION = [
+  "I'm working on the authentication fix now.",
+  "Once the migration is ready, we'll ship it to production.",
+  'The tests are done running, let me check the output.',
+  "I'll get this working and ship the build shortly.",
+  "Let's make sure everything is set up correctly before we proceed.",
+  "I'm ready to start implementing the feature.",
+];
+
+for (const text of GENUINE_COMPLETION_CLAIMS) {
+  test(`hasCompletionClaim recognizes genuine completion claim: "${text}"`, () => {
+    assert.equal(hasCompletionClaim([mkEv(0, 'assistant', text)]), true);
+  });
+}
+
+for (const text of MID_TASK_NARRATION) {
+  test(`hasCompletionClaim ignores mid-task narration: "${text}"`, () => {
+    assert.equal(hasCompletionClaim([mkEv(0, 'assistant', text)]), false);
+  });
+}

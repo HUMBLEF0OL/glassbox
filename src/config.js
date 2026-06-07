@@ -66,9 +66,9 @@ export const VERIFY_PATTERNS = [
  * Trace: BR-05, AC-04
  */
 export const COMPLETION_PATTERNS = [
-  /\b(is (now )?complete|has been (implemented|done|finished|added|created))\b/i,
-  /\b(implementation is complete|all tests pass|the (fix|feature|change) is|i('ve| have) (implemented|completed|finished|added|created))\b/i,
-  /\b(done|ready|working|ship[p]?ed)\b.*\./i,
+  /\b(?:is (?:now )?complete|has been (?:implemented|done|finished|added|created|fixed|resolved))\b/i,
+  /\b(?:all tests pass(?:ing)?|the (?:fix|feature|change|task|issue|bug|work|implementation) (?:is|looks|are) (?:now )?(?:complete|done|finished|ready|fixed|good|working)|i(?:'ve| have) (?:implemented|completed|finished|added|created|fixed|resolved))\b/i,
+  /\b(?:i'?m|we'?re|it'?s|this is|that'?s|everything(?:'s| is)|all)\s+(?:now\s+)?(?:done|finished|shipped)\b/i,
 ];
 
 /**
