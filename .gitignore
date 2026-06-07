@@ -155,3 +155,9 @@ glassbox-report.html
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Internal planning docs — not for the public repo (BRD/TSD/plan only;
+# docs/harness/* stays tracked since it documents the shipped harness).
+/docs/Glassbox_BRD.md
+/docs/Glassbox_Implementation_Plan.md
+/docs/Glassbox_TSD.md

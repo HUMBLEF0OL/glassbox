@@ -9,7 +9,7 @@ calls** and never controls the agent.
 ## What it measures
 
 Grep-vs-semantic ratio, early-victory flag, verification density, overreach, continuity, and loop
-detection — see [docs/Glassbox_BRD.md](docs/Glassbox_BRD.md) (BR-04…BR-09).
+detection (BR-04…BR-09 in the project's internal requirements doc).
 
 ## Install
 
@@ -100,8 +100,7 @@ The verify gate (`node --test` + a no-network import check) is the single source
 
 No build step, Node built-ins only, no network imports, a single normalization boundary
 (`src/normalize.js`), strict layering, one metric per file, graceful degradation. Full details:
-[CLAUDE.md](CLAUDE.md), [.claude/rules.md](.claude/rules.md), and
-[docs/Glassbox_TSD.md](docs/Glassbox_TSD.md).
+[CLAUDE.md](CLAUDE.md) and [.claude/rules.md](.claude/rules.md).
 
 Built under its own harness, per
 [Learn Harness Engineering](https://walkinglabs.github.io/learn-harness-engineering/en/).

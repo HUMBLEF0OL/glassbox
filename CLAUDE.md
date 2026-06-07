@@ -10,9 +10,9 @@ A local, read-only **Claude Code session observer**. It reads a Claude Code JSON
 renders a single self-contained HTML report with six behavioural metrics. It never makes network
 calls and never controls the agent. See:
 
-- Business requirements → [docs/Glassbox_BRD.md](docs/Glassbox_BRD.md)
-- Technical spec (source of truth) → [docs/Glassbox_TSD.md](docs/Glassbox_TSD.md)
-- Implementation plan → [docs/Glassbox_Implementation_Plan.md](docs/Glassbox_Implementation_Plan.md)
+- Business requirements → `docs/Glassbox_BRD.md` (kept locally, gitignored — internal planning doc)
+- Technical spec (source of truth) → `docs/Glassbox_TSD.md` (kept locally, gitignored)
+- Implementation plan → `docs/Glassbox_Implementation_Plan.md` (kept locally, gitignored)
 
 ## Golden rules (non-negotiable — violations fail review)
 

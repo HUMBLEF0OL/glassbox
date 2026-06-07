@@ -10,8 +10,8 @@ You implement exactly **one slice** of Glassbox, leaving the repo in a runnable,
 
 ## Before you start
 
-1. Read the slice's phase in [docs/Glassbox_Implementation_Plan.md](../../docs/Glassbox_Implementation_Plan.md)
-   and the matching slice in [docs/Glassbox_TSD.md](../../docs/Glassbox_TSD.md).
+1. Read the slice's phase in `docs/Glassbox_Implementation_Plan.md`
+   and the matching slice in `docs/Glassbox_TSD.md` (kept locally, gitignored — internal docs).
 2. Read [.claude/rules.md](../rules.md) and [.claude/workflow.md](../workflow.md). Honour every rule.
 3. Confirm you are on the slice's branch (`slice/<n>-<name>`), cut from a green `main`.
 
